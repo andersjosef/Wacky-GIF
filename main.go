@@ -16,13 +16,14 @@ import (
 	"sync"
 )
 
-const (
-	fileSRC   = "sel.jpeg" // Inputfile
-	outputGIF = "sel.gif"  // Outputfile
-	DELAY     = 10         // Delay in 100th of a second
-)
+const DELAY = 10 // Delay in 100th of a second
 
 func main() {
+	fileSRC, fileDST, err := getArguments()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	// Open and decode the source image
 	img, err := loadImage(fileSRC)
 	if err != nil {
@@ -106,7 +107,7 @@ func main() {
 	}
 
 	// Make GIF file
-	outputFile, err := os.Create(outputGIF)
+	outputFile, err := os.Create(fileDST)
 	if err != nil {
 		fmt.Println("Error creating GIF file:", err)
 		return
@@ -150,6 +151,18 @@ func shuffle(slice []func(image.Image, int, int) draw.Image) {
 		j := rand.Intn(i + 1)
 		slice[i], slice[j] = slice[j], slice[i]
 	}
+}
+
+// Handeling the arguments for sourcefile destination file and stepsize
+func getArguments() (fileSRC, fileDST string, err error) {
+	if len(os.Args) != 3 {
+		return "", "", fmt.Errorf("Usage: ./program /source/path.jpeg /destination/path.gif")
+	}
+
+	fileSRC = os.Args[1]
+	fileDST = os.Args[2]
+
+	return fileSRC, fileDST, nil
 }
 
 /* ---------------- The Transformation Functions ---------------- */
