@@ -6,6 +6,6 @@
 
 ## Features
 
-- **Image Transformations**: Apply various effects like brightness adjustment, wave effects, kaleidoscope patterns, and more.
+- **Image Transformations**: Applies various effects like brightness adjustment, wave effects, kaleidoscope patterns, and more.
 - **GIF Creation**: Automatically create a GIF from the transformed frames.
 - **Multi-threaded**: Processes transformations using Go's concurrency features.

@@ -72,6 +72,20 @@ func main() {
 		},
 		kaleidoscopeImage,
 		strong,
+		sickTwist,
+		func(img image.Image, width, height int) draw.Image {
+
+			newImg := sickTwist(img, width, height)
+			newImg = convertImageHorizontal(newImg, width, height, 1, 1, 1)
+			newImg = convertImageHorizontal(newImg, width, height, 1, 1, 1)
+			return newImg
+		},
+		func(img image.Image, width, height int) draw.Image {
+
+			newImg := sickTwist(img, width, height)
+			newImg = convertImageHorizontal(newImg, width, height, 1, 1, 1)
+			return newImg
+		},
 	}
 
 	// Shuffle the transformations
@@ -156,7 +170,7 @@ func shuffle(slice []func(image.Image, int, int) draw.Image) {
 // Handeling the arguments for sourcefile destination file and stepsize
 func getArguments() (fileSRC, fileDST string, err error) {
 	if len(os.Args) != 3 {
-		return "", "", fmt.Errorf("Usage: ./program /source/path.jpeg /destination/path.gif")
+		return "", "", fmt.Errorf("usage: ./program /source/path.jpeg /destination/path.gif")
 	}
 
 	fileSRC = os.Args[1]
@@ -330,4 +344,28 @@ func maxOfThree(r, g, b uint8) rune {
 	} else {
 		return 'b'
 	}
+}
+
+func sickTwist(img image.Image, width, height int) draw.Image {
+	newImg := image.NewRGBA(image.Rect(0, 0, width, height))
+
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			col := img.At(x, y)
+			r, g, b, _ := col.RGBA()
+			if (x+y)%2 != 0 {
+				col = img.At(width-x, height-y)
+				g, _, b, _ = col.RGBA()
+			}
+
+			fillCol := color.RGBA{
+				uint8(r >> 8),
+				uint8(g >> 8),
+				uint8(b >> 8),
+				255,
+			}
+			newImg.Set(x, y, fillCol)
+		}
+	}
+	return newImg
 }
